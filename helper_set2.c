@@ -8,10 +8,9 @@
  * @line_number: value of node
  * Return: Nothing
  **/
-void nop(stack_t **stack, unsigned int line_number)
+void nop(stack_t **stack __attribute__((unused)), unsigned int line_number __attribute__((unused)))
 {
-	UNUSED(stack);
-	UNUSED(line_number);
+	return;
 }
 
 /**
@@ -22,19 +21,19 @@ void nop(stack_t **stack, unsigned int line_number)
  **/
 void swap(stack_t **stack, unsigned int line_number)
 {
-	int *tmp;
+	stack_t *tmp;
 
-	if (*stack->next == NULL || stack->prev == NULL)
+	if ((*stack)->next == NULL || (*stack)->prev == NULL)
 	{
 		printf("L%u: can't swap, stack too short", line_number);
 		exit(EXIT_FAILURE);
 	}
 
 	tmp = *stack;
-	stack = *stack->next;
-	stack->prev = NULL;
+	*stack = (*stack)->next;
+	(*stack)->prev = NULL;
 	tmp->prev = *stack;
-	stack-next = tmp->next;
+	(*stack)->next = tmp->next;
 
 }
 
@@ -48,11 +47,11 @@ void add(stack_t **stack, unsigned int line_number)
 {
 	int tmp;
 
-	if (*stack = NULL || **stack = NULL)
+	if (stack == NULL || *stack == NULL)
 	{
-		printf("L%u: can't add, stack too short");
+		printf("L%u: can't add, stack too short", line_number);
 		exit(EXIT_FAILURE);
 	}
-	tmp = *stack->n;
-	*stack->n += tmp;
+	tmp = (*stack)->n;
+	(*stack)->n += tmp;
 }

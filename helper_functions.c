@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "monty.h"
 
 /**
@@ -10,18 +8,17 @@
  **/
 void push(stack_t **stack, unsigned int line_number)
 {
-	int num;
+	stack_t *new_node = NULL;
 
 	new_node = malloc(sizeof(stack_t));
-	if (new_node = NULL)
+	if (new_node == NULL)
 	{
 		printf("Error: malloc failed");
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
-	new_node->n = num;
+	new_node->n = line_number;
 	new_node->next = *stack;
 	new_node->prev = NULL;
-
 
 }
 
@@ -31,24 +28,24 @@ void push(stack_t **stack, unsigned int line_number)
  * @line_number: value of node
  * Return: nothing
  **/
-void pop(stack_t **stack, unsigned int line_number)
+void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	stack_t *temp;
+	stack_t *new_node = *stack;
 
-	if (*stack == NULL || stack == NULL)
-		return (EXIT_FAILURE)
-
+	if (stack == NULL || *stack == NULL)
+		exit(EXIT_FAILURE);
 
 	if (new_node->prev == NULL)
 	{
-	*stack->prev = NULL;
+		(*stack)->prev = NULL;
 	}
 
 	*stack = new_node->next;
-	tmp = *stack;
-	*stack = *stack->next;
+	temp = *stack;
+	*stack = (*stack)->next;
 
-	free(tmp);
+	free(temp);
 }
 /**
  * pall - prints values of stack from top down
@@ -57,15 +54,13 @@ void pop(stack_t **stack, unsigned int line_number)
  * Return: nothing
  **/
 
-void pall(stack_t **stack, unsigned int line_numeber)
+void pall(stack_t **stack, unsigned int line_numeber __attribute__((unused)))
 {
 	stack_t *new_node = *stack;
 
-	UNUSED(line_number);
-
 	while (new_node != NULL)
 	{
-		print("%d", element->n);
+		printf("%d", new_node->n);
 		new_node = new_node->next;
 	}
 }
@@ -76,10 +71,9 @@ void pall(stack_t **stack, unsigned int line_numeber)
  * @line_number:
  * Return: nothing
  **/
-void pint(stack_t **stack, unsigned int line_number)
+void pint(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
-	if (*stack == NULL || stack == NULL)
-		exit(EXIT_FAILURE)
-
-	printf("%d\n", s*tack->n);
+	if (stack == NULL || *stack == NULL)
+		exit(EXIT_FAILURE);
+	printf("%d\n", (*stack)->n);
 }
