@@ -25,6 +25,7 @@ void push(stack_t **stack, unsigned int line_number)
 
 }
 
+
 /**
  * pop - pops node from stack
  * @stack: points to top of node
@@ -50,6 +51,9 @@ void pop(stack_t **stack, unsigned int line_number)
 
 	free(tmp);
 }
+
+
+
 /**
  * pall - prints values of stack from top down
  * @stack: points to top of node
@@ -68,6 +72,7 @@ void pall(stack_t **stack, unsigned int line_numeber)
 		print("%d", element->n);
 		new_node = new_node->next;
 	}
+
 }
 
 /**

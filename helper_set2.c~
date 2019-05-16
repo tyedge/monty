@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "monty.h"
+
+/**
+ * nop - does nothing
+ * @stack: points to top of stack
+ * @line_number: value of node
+ * Return: Nothing
+ **/
+void nop(stack_t **stack, unsigned int line_number)
+{
+	UNUSED(stack);
+	UNUSED(line_number);
+}
+
+/**
+ * swap - pushes node to stack
+ * @stack: points to top of node
+ * @line_number: value of node
+ * Return: nothing
+ **/
+void swap(stack_t **stack, unsigned int line_number)
+{
+
+
+	if (*stack->next == NULL || stack->prev == NULL)
+	{
+		printf("L%u: can't swap, stack too short", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	
+
+}
+
+/**
+ * add - adds the top two elements of the stack
+ * @stack: points to top of node
+ * @line_number: value of node
+ * Return: nothing
+ **/
+void add(stack_t **stack, unsigned int line_number)
+{
+	stack_t *second_node;
+
+	if (*stack = NULL || **stack = NULL)
+	{
+		printf("L%u: can't add, stack too short");
+		exit(EXIT_FAILURE);
+	}
+	*second_node = stack->next;
+	sum = *stack->n + second_node->n;
+}
