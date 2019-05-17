@@ -6,20 +6,27 @@
  * @line_number: value of node
  * Return: nothing
  **/
-void push(stack_t **stack, unsigned int line_number)
+void  push(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
-	stack_t *new_node = NULL;
+	stack_t *top;
 
-	new_node = malloc(sizeof(stack_t));
-	if (new_node == NULL)
+
+	if (stack == NULL)
+		return;
+	top = malloc(sizeof(stack_t));
+	if (top == NULL)
 	{
 		printf("Error: malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	new_node->n = line_number;
-	new_node->next = *stack;
-	new_node->prev = NULL;
-
+	top->n = rax.data;
+	top->next = *stack;
+	top->prev = NULL;
+	if (*stack != NULL)
+		(*stack)->prev = top;
+	*stack = top;
+	rax.head = top;
+	rax.stack_sz++;
 }
 
 
@@ -29,24 +36,23 @@ void push(stack_t **stack, unsigned int line_number)
  * @line_number: value of node
  * Return: nothing
  **/
-void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
+void  pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
-	stack_t *temp;
 	stack_t *new_node = *stack;
 
-	if (stack == NULL || *stack == NULL)
+	if (stack == NULL)
 		exit(EXIT_FAILURE);
 
-	if (new_node->prev == NULL)
+	if (new_node->next != NULL)
 	{
 		(*stack)->prev = NULL;
 	}
-
+	new_node = *stack;
+	rax.head = new_node->next;
+	rax.data = new_node->n;
 	*stack = new_node->next;
-	temp = *stack;
-	*stack = (*stack)->next;
-
-	free(temp);
+	rax.stack_sz--;
+	free(new_node);
 }
 
 
@@ -58,14 +64,15 @@ void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
  * Return: nothing
  **/
 
-void pall(stack_t **stack, unsigned int line_numeber __attribute__((unused)))
+void pall(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
-	stack_t *new_node = *stack;
+	stack_t **new_node = stack;
 
-	while (new_node != NULL)
+	(*new_node)->n = rax.data;
+	while (*new_node != NULL)
 	{
-		printf("%d", new_node->n);
-		new_node = new_node->next;
+		printf("%d\n", (*new_node)->n);
+		*new_node = (*new_node)->next;
 	}
 
 }
@@ -80,5 +87,6 @@ void pint(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	if (stack == NULL || *stack == NULL)
 		exit(EXIT_FAILURE);
+	(*stack)->n = rax.data;
 	printf("%d\n", (*stack)->n);
 }
