@@ -8,7 +8,6 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/wait.h>
 #include <sys/types.h>
 #include <stdbool.h>
 
@@ -44,6 +43,28 @@ typedef struct instruction_s
         void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+/**
+ * struct global - struct of random things to be manipulated
+ * @data: the n value of the stack struct
+ * @head: pointer to head
+ * @stack_sz: stack size
+ *
+ * Description: random struct
+ *
+ */
+struct global
+{
+        int data;
+	stack_t *head;
+	int stack_sz;
+} rax;
 
+void push(stack_t **stack, unsigned int line_number);
+void pop(stack_t **stack, unsigned int line_number);
+void pall(stack_t **stack, unsigned int line_numeber);
+void pint(stack_t **stack, unsigned int line_number);
+void nop(stack_t **stack, unsigned int line_number);
+void swap(stack_t **stack, unsigned int line_number);
+void add(stack_t **stack, unsigned int line_number);
 
 #endif /* MONTY_H */
