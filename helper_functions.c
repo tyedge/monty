@@ -8,7 +8,8 @@
  **/
 void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new_node = NULL;
+	int number;
+	statck_t *new_node;
 
 	new_node = malloc(sizeof(stack_t));
 	if (new_node == NULL)
@@ -16,10 +17,10 @@ void push(stack_t **stack, unsigned int line_number)
 		printf("Error: malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	new_node->n = line_number;
-	new_node->next = *stack;
-	new_node->prev = NULL;
 
+	new_node->n = number;
+	new_node->next = *stack;
+	*stack = new_node;
 }
 
 /**
@@ -31,19 +32,20 @@ void push(stack_t **stack, unsigned int line_number)
 void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	stack_t *temp;
-	stack_t *new_node = *stack;
 
 	if (stack == NULL || *stack == NULL)
+	{
+		printf("L%u: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
+	}
 
 	if (new_node->prev == NULL)
 	{
 		(*stack)->prev = NULL;
 	}
 
-	*stack = new_node->next;
 	temp = *stack;
-	*stack = (*stack)->next;
+	(*stack) = (*stack)->next;
 
 	free(temp);
 }
@@ -56,7 +58,8 @@ void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
 
 void pall(stack_t **stack, unsigned int line_numeber __attribute__((unused)))
 {
-	stack_t *new_node = *stack;
+	stack_t *new_node;
+	new_node = *stack;
 
 	while (new_node != NULL)
 	{
