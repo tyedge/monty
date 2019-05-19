@@ -49,6 +49,12 @@ typedef struct instruction_s
  * @data: the n value of the stack struct
  * @head: pointer to head
  * @stack_sz: stack size
+ * @funcs: operator functions
+ * @opcode: opcode instruction
+ * @operand: operand value
+ * @popval: most recent value removed from stack
+ * @linenum: global line number variable
+ * @index: index of function to be run
  *
  * Description: random struct
  *
@@ -58,15 +64,38 @@ struct global
         int data;
 	stack_t *head;
 	int stack_sz;
+	char **funcs;
+	char *opcode;
+	int operand;
+	int popval;
+	unsigned int linenum;
+	int index;
 } rax;
+
+
+
+
+struct finder
+{
+
+	char *instruction;
+	int case_num;
+};
+
+
+
+
+
+
 
 void push(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
+int popper(stack_t **stack);
 void pall(stack_t **stack, unsigned int line_numeber);
 void pint(stack_t **stack, unsigned int line_number);
 void nop(stack_t **stack, unsigned int line_number);
 void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
-
+void free_nodes(stack_t *head);
 
 #endif /* MONTY_H */

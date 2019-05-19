@@ -1,7 +1,7 @@
 #include "monty.h"
 
 void print_file(FILE *input_file);
-void (*get_func(char *op))(stack_t **stack, unsigned int line_number);
+void (*get_func (char *op))(stack_t **stack, unsigned int line_number);
 char **token_maker(char *str);
 void run_function(char *opcode, unsigned int op, stack_t **stack, unsigned int line_number);
 
@@ -23,9 +23,10 @@ int main(int argc, char **argv)
 	ssize_t chars_read;
 	char opcode[128];
 	int operand;
+	int i = 0;
 	unsigned int line_count = 0;
 	stack_t *new = NULL;
-
+	char *functions[8] = {"push", "pop", "pall", "pint", "swap", "add", "nop", NULL};
 
 	if (argc != 2)
 	{
@@ -33,21 +34,66 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	mfile = fopen(argv[1], "r");
-	if (mfile == NULL) {
+	if (mfile == NULL)
+	{
 		perror("fopen");
 		exit(EXIT_FAILURE);
 	}
-
-	while ((chars_read = getline(&line, &line_sz, mfile)) != -1)
+	else
 	{
-		sscanf(line, "%s %d", opcode, &operand);
-		rax.data = operand;
-		get_func(opcode)(&new, line_count);
-		line_count++;
+		while ((chars_read = getline(&line, &line_sz, mfile)) > -1)
+		{
+			sscanf(line, "%s %d", opcode, &operand);
+			line_count++;
+			rax.linenum = line_count;
+			rax.opcode = opcode;
+			/*rax.operand = operand;*/
+			while (functions[i])
+			{
+				if (strcmp(rax.opcode, functions[i]) == 0)
+				{
+/*					printf("opcode is: %s\n", opcode);
+					printf("match\n");*/
+					if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0)
+					{
+/*						printf("The instruction is: %s\n", rax.opcode);*/
+						rax.operand= operand;
+					}
+					else
+					{
+						rax.operand= operand;
+/*						printf("The instruction is: %s %d\n", rax.opcode, rax.operand);*/
+					}
+/*					printf("i in main is: %d\n", i);*/
+					rax.index = i;
+					get_func(rax.opcode)(&new, line_count);
+					break;
+					/*pall(&new, line_count);*/
+				}
+				i++;
+			}
+			i = 0;
+		}
+/*		rax.opcode = opcode;
+		rax.data = operand;*/
+		/*	push(&new, line_count);
+		pint(&new, line_count);
+		push(&new, line_count);
+		pint(&new, line_count);
+		push(&new, line_count);
+		pint(&new, line_count);
+		(get_func(opcode))(&new, line_count);*/
 	}
+/*	while (new)
+	{
+      		printf("%d\n", new->n);
+       		new = new->next;
+		}*/
+	line_count = 0;
 	free(line);
+	free_nodes(new);
 	fclose(mfile);
-	exit(EXIT_SUCCESS);
+	return (0);
 }
 
 
@@ -55,7 +101,7 @@ void print_file(FILE *input_file)
 {
 	int letter;
 
-	while ((letter = fgetc(input_file)) != '\n')
+	while ((letter = fgetc(input_file)) != EOF)
 		printf("%c", letter);
 }
 
@@ -65,33 +111,55 @@ void print_file(FILE *input_file)
  * which takes a ** to a stack struct and an unsigned
  * int and returns void
  * an integer
- * @op: opcode instrunction passed from file
+ * : opcode instrunction passed from file
  *
  * Return: pointer to the function matching the
  * given opcode, if found, OR NULL
  *
  */
-
 void (*get_func(char *op))(stack_t **stack, unsigned int line_number)
 {
+
+/*	if (strcmp(rax.opcode, "push") == 0)
+		push(stack, line_number);
+	if (strcmp(rax.opcode, "pall") == 0)
+                pall(stack, line_number);
+	if (strcmp(rax.opcode, "pop") == 0)
+                pop(stack, line_number);
+	if (strcmp(rax.opcode, "pint") == 0)
+                pint(stack, line_number);
+	if (strcmp(rax.opcode, "add") == 0)
+                add(stack, line_number);
+	if (strcmp(rax.opcode, "swap") == 0)
+                swap(stack, line_number);
+	if (strcmp(rax.opcode, "nop") == 0)
+	nop(stack, line_number);*/
+
 	instruction_t op_func[] = {
-		{"push", push},
-		{"pop", pop},
+	       	{"push", push},
+       		{"pop", pop},
 		{"pall", pall},
 		{"pint", pint},
 		{"swap", swap},
 		{"add", add},
-		{NULL, nop}
+		{"nop", nop},
 	};
 
-	int i = 0;
-	while (op_func[i].opcode)
+	int i = rax.index;
+/*	printf("The rax.opcode called is: %s\n", op);*/
+	while (*op_func[i].opcode)
 	{
-		if (*op == *op_func[i].opcode)
+/*		printf("i is: %d\n", i);*/
+		if (*op != *op_func[i].opcode)
 		{
-			return(*op_func[i].f);
+			i++;
 		}
-		i++;
+		else
+		{
+/*			printf("Test val is: %d\n", 1);
+			printf("The opcode to execute is: %s\n", op_func[i].opcode);*/
+			return (*op_func[i].f);
+		}
 	}
 	return (NULL);
 }
