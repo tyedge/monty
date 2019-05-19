@@ -25,15 +25,12 @@ void swap(stack_t **stack, unsigned int line_number)
 
 	if ((*stack)->next == NULL || (*stack)->prev == NULL)
 	{
-		printf("L%u: can't swap, stack too short\n", line_number);
-		exit(EXIT_FAILURE);
+		error_handling(4);
 	}
 
-	tmp = *stack->n;
-	*stack = (*stack)->next;
-	(*stack)->prev = NULL;
-	tmp->prev = *stack;
-	(*stack)->next = tmp->next;
+	tmp = (*stack)->n;
+	*stack->n = (*stack)->next->n;
+	(*stack)->next->n = tmp;
 
 }
 
@@ -43,9 +40,28 @@ void swap(stack_t **stack, unsigned int line_number)
  * @line_number: value of node
  * Return: nothing
  **/
-void add(stack_t **stack, unsigned int line_number)
+int add(stack_t **stack, unsigned int line_number __attribute__ ((unused)))
 {
-	int tmp;
+	int a = 0;
+	int b = 0;
+
+	stack_t **top = stack;
+
+	if (stack_size < 2)
+	{
+		error_handling(5);
+	}
+
+	a = pop(top);
+	b = pop(top);
+	push(top, b + a);
+
+
+	return (0);
+
+}
+/**
+	int *tmp;
 	(*stack)->n;
 	if (stack == NULL || *stack == NULL)
 	{
@@ -55,6 +71,11 @@ void add(stack_t **stack, unsigned int line_number)
 	tmp = (*stack)->n;
 	(*stack)->n += tmp;
 }
+
+**/
+
+
+
 
 
 /**
