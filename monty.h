@@ -43,7 +43,6 @@ typedef struct instruction_s
         void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-
 /**
  * struct global - struct of random things to be manipulated
  * @data: the n value of the stack struct
@@ -97,5 +96,6 @@ void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 void sub(stack_t **stack, unsigned int line_number);
 void free_nodes(stack_t *head);
+
 
 #endif /* MONTY_H */
