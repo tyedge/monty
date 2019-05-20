@@ -11,13 +11,14 @@
 void push(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	stack_t *top;
+
 	rax.data = rax.operand;
 	if (stack == NULL)
 		return;
 	top = malloc(sizeof(stack_t));
 	if (top == NULL)
 	{
-		printf("Error: malloc failed");
+		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 	top->n = rax.data;
@@ -44,6 +45,11 @@ void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
 
 	if (stack == NULL)
 		exit(EXIT_FAILURE);
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L%i: can't pop an empty stack\n", rax.linenum);
+		exit(EXIT_FAILURE);
+	}
 	current = *stack;
 	*stack = (*stack)->next;
 	rax.popval = current->n;
@@ -61,15 +67,22 @@ void pop(stack_t **stack, unsigned int line_number __attribute__((unused)))
  * Return: nothing
  **/
 
-void pall(stack_t **stack __attribute__((unused)), unsigned int line_number __attribute__((unused)))
+void pall(stack_t **stack __attribute__((unused)), unsigned int line_number
+	  __attribute__((unused)))
 {
 	stack_t *new_node = *stack;
-	while (new_node != NULL)
-	{
-		printf("%d\n", new_node->n);
-		new_node = new_node->next;
-	}
 
+	if (stack == NULL)
+		exit(EXIT_FAILURE);
+	if (*stack != NULL)
+	{
+		while (new_node != NULL)
+		{
+			printf("%d\n", new_node->n);
+			new_node = new_node->next;
+		}
+
+	}
 }
 
 
@@ -82,8 +95,13 @@ void pall(stack_t **stack __attribute__((unused)), unsigned int line_number __at
 
 void pint(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
-	if (stack == NULL || *stack == NULL)
+	if (stack == NULL)
 		exit(EXIT_FAILURE);
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L%i: can't pint an empty stack\n", rax.linenum);
+		exit(EXIT_FAILURE);
+	}
 	printf("%d\n", (*stack)->n);
 }
 
@@ -99,7 +117,7 @@ void swap(stack_t **stack, unsigned int line_number)
 {
 	int c, d;
 
-	if (stack == NULL || *stack == NULL)
+	if (rax.stack_sz < 2)
 	{
 		printf("L%u: can't swap, stack too short", line_number);
 		exit(EXIT_FAILURE);
