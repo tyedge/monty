@@ -1,10 +1,5 @@
 #include "monty.h"
 
-void print_file(FILE *input_file);
-void (*get_func(char *op))(stack_t **stack, unsigned int line_number);
-char **token_maker(char *str);
-void run_function(char *opcode, unsigned int op, stack_t **stack, unsigned int line_number);
-
 /**
  * main - This program operates as a simple shell
  * @argc: the number of command line arguments
@@ -22,41 +17,57 @@ int main(int argc, char **argv)
 	size_t line_sz = 0;
 	ssize_t chars_read;
 	char opcode[128];
-	int operand;
+	int operand, i = 0, retval;
 	unsigned int line_count = 0;
 	stack_t *new = NULL;
-
+	char *functions[9] = {"push", "pop", "pall", "pint", "swap", "add",
+			      "nop", "sub", NULL};
 
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: %s file \n", argv[0]);
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 	mfile = fopen(argv[1], "r");
-	if (mfile == NULL) {
-		perror("fopen");
+	if (mfile == NULL)
+	{
+		fprintf(stderr, "Error: Can't open file %s", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-
-	while ((chars_read = getline(&line, &line_sz, mfile)) != -1)
+	else
 	{
-		sscanf(line, "%s %d", opcode, &operand);
-		rax.data = operand;
-		get_func(opcode)(&new, line_count);
-		line_count++;
+		while ((chars_read = getline(&line, &line_sz, mfile)) > -1)
+		{
+			line_count++;
+			rax.linenum = line_count;
+			retval = sscanf(line, "%s %d", opcode, &operand);
+			if (retval < 0)
+			{
+				free(line);
+				exit(EXIT_FAILURE);
+			}
+			rax.opcode = opcode;
+			while (functions[i])
+			{
+				if (strcmp(rax.opcode, functions[i]) == 0)
+				{
+					rax.operand = operand;
+					rax.index = i;
+					get_func(rax.opcode)(&new, line_count);
+					break;
+				}
+				i++;
+			}
+			i = 0;
+			free(line);
+			line = NULL;
+		}
 	}
+	line_count = 0;
 	free(line);
+	free_nodes(new);
 	fclose(mfile);
-	exit(EXIT_SUCCESS);
-}
-
-
-void print_file(FILE *input_file)
-{
-	int letter;
-
-	while ((letter = fgetc(input_file)) != '\n')
-		printf("%c", letter);
+	return (0);
 }
 
 /**
@@ -71,7 +82,6 @@ void print_file(FILE *input_file)
  * given opcode, if found, OR NULL
  *
  */
-
 void (*get_func(char *op))(stack_t **stack, unsigned int line_number)
 {
 	instruction_t op_func[] = {
@@ -81,65 +91,21 @@ void (*get_func(char *op))(stack_t **stack, unsigned int line_number)
 		{"pint", pint},
 		{"swap", swap},
 		{"add", add},
-		{NULL, nop}
+		{"nop", nop},
+		{"sub", sub},
 	};
+	int i = rax.index;
 
-	int i = 0;
-	while (op_func[i].opcode)
+	while (*op_func[i].opcode)
 	{
-		if (*op == *op_func[i].opcode)
+		if (*op != *op_func[i].opcode)
 		{
-			return(*op_func[i].f);
+			i++;
 		}
-		i++;
+		else
+		{
+			return (*op_func[i].f);
+		}
 	}
 	return (NULL);
-}
-
-
-/**
- * token_maker - splits a string into an array of tokens
- * @str: string to be tokenized and packaged
- *
- * Return: vector array of string tokens
- */
-
-char **token_maker(char *str)
-{
-	size_t idx = 0, io = 0;
-	int tkn = 1;
-	char **tokens;
-	char *buf, *token, *bufptr, *delim = " :\t";
-
-	buf = strdup(str);
-	if (buf == NULL)
-		return (NULL);
-	bufptr = buf;
-	while (*bufptr)
-	{
-		if (strchr(delim, *bufptr) != NULL && io == 0)
-		{
-			tkn++;
-			io = 1;
-		}
-		else if (strchr(delim, *bufptr) == NULL && io == 1)
-			io = 0;
-		bufptr++;
-	}
-	tokens = malloc(sizeof(char *) * (tkn + 1));
-	token = strtok(buf, delim);
-	while (token)
-	{
-		tokens[idx] = strdup(token);
-		if (tokens[idx] == NULL)
-		{
-			free(tokens);
-			return (NULL);
-		}
-		token = strtok(NULL, delim);
-		idx++;
-	}
-	tokens[idx] = NULL;
-
-	return (tokens);
 }
